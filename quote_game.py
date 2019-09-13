@@ -5,8 +5,6 @@ from random import randint
 
 BASE_URL = "http://quotes.toscrape.com"
 
-
-BASE_URL = "http://quotes.toscrape.com"
 response = get(BASE_URL)
 soup = BeautifulSoup(response.text, "html.parser")
 quotes = soup.find_all(class_="quote")
