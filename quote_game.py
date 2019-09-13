@@ -25,6 +25,12 @@ with open("quote_data.csv","w") as f:
 
 random_number = randint(1,id_num)
 
+#everything above this is ok, i dont see a need to change per se, maybe easier to do this scrape at the start of each game 
+#rather than output to csv just to read again later in the runtime...
+#as the above code will still be run even if there is a csv file with current data...
+
+
+# doing the game like this means i cant include a "do you want to try again" element of the game easily...
 with open("quote_data.csv") as f:
   csv_reader = DictReader(f)
   for i in csv_reader:
@@ -35,7 +41,7 @@ guess = 4
 GAME_STATE = True
 
 while(GAME_STATE):
-
+# pretty sure this part can be refactored to be waaaayyy cleaner...
   def get_clue_data(link):
     ABOUT_URL = BASE_URL + link
     about_req = get(ABOUT_URL)
