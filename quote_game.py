@@ -3,6 +3,8 @@ from requests import get
 from csv import writer, DictReader
 from random import randint
 
+# TODO// Refactor and split into modules/classes maybe for cleaner code
+
 BASE_URL = "http://quotes.toscrape.com"
 
 response = get(BASE_URL)
@@ -22,8 +24,6 @@ with open("quote_data.csv","w") as f:
     id_num += 1
 
 random_number = randint(1,id_num)
-
-##TODO: Randomly pick line from csv, place author as namevariable and display quote, and input link into get_clue_data function to return the clues for that author.
 
 with open("quote_data.csv") as f:
   csv_reader = DictReader(f)
