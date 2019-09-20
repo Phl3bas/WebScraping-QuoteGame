@@ -13,6 +13,7 @@ def start_game(QUOTES):
       about_req = get(ABOUT_URL)
       about = BeautifulSoup(about_req.text, "html.parser")
       return about
+    
   print("")
   print("Guess who said the following quote: ")
   print(ans["text"])
