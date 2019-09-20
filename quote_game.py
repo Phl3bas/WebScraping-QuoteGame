@@ -1,80 +1,71 @@
+from random import choice
 from bs4 import BeautifulSoup
 from requests import get
-from csv import writer, DictReader
-from random import randint
-
-# TODO// Refactor and split into modules/classes maybe for cleaner code
+import Scraper
 
 BASE_URL = "http://quotes.toscrape.com"
-
-response = get(BASE_URL)
-soup = BeautifulSoup(response.text, "html.parser")
-quotes = soup.find_all(class_="quote")
-
-with open("quote_data.csv","w") as f:
-  csv_writer = writer(f)
-  csv_writer.writerow(["id","author", "text", "link"])
-  id_num = 1
-
-  for quote in quotes:
-    text = quote.find(class_="text").get_text()
-    author = quote.find(class_="author").get_text()
-    link = quote.find(class_="author").find_next_sibling()["href"]
-    csv_writer.writerow([id_num,author, text.strip('\“').strip('\”'), link])
-    id_num += 1
-
-random_number = randint(1,id_num)
-
-#everything above this is ok, i dont see a need to change per se, maybe easier to do this scrape at the start of each game 
-#rather than output to csv just to read again later in the runtime...
-#as the above code will still be run even if there is a csv file with current data...
-
-
-# doing the game like this means i cant include a "do you want to try again" element of the game easily...
-with open("quote_data.csv") as f:
-  csv_reader = DictReader(f)
-  for i in csv_reader:
-    if int(i["id"]) == random_number:
-      ans = [int(i["id"]),i["author"],i["text"],i["link"]]
-    
+QUOTES = Scraper.get_quotes(BASE_URL)
+ans = choice(QUOTES)
 guess = 4
+
 GAME_STATE = True
 
 while(GAME_STATE):
-# pretty sure this part can be refactored to be waaaayyy cleaner...
+
   def get_clue_data(link):
     ABOUT_URL = BASE_URL + link
     about_req = get(ABOUT_URL)
     about = BeautifulSoup(about_req.text, "html.parser")
     return about
 
+  def end_game(user_input):
+    global guess
+    global GAME_STATE
+    
+    if user_input.lower() == "y":
+      BASE_URL = "http://quotes.toscrape.com"
+      QUOTES = Scraper.get_quotes(BASE_URL)
+      guess = 4
+      ans = choice(QUOTES)
+      return ans
+    else:
+      GAME_STATE = False
+
+  print("")
   if(guess == 4):
     print("Guess who said the following quote: ")
-    print(ans[2])
+    print(ans["text"])
 
   elif(guess == 3):
-    clue = get_clue_data(ans[3])
+    clue = get_clue_data(ans["link"])
     born = clue.find(class_="author-born-date").get_text()
     print("First clue: The author was born " + born)
 
   elif(guess == 2):
-    clue = get_clue_data(ans[3])
+    clue = get_clue_data(ans["link"])
     location = clue.find(class_="author-born-location").get_text()
     print("Second clue: Was Born " + location)
 
   elif(guess == 1):
-    clue = get_clue_data(ans[3])
+    clue = get_clue_data(ans["link"])
     first = clue.find(class_="author-title").get_text()[0]
     second = clue.find(class_="author-title").get_text().split(" ")[1][0]
     print("Last clue: Initials are " + first + second)
 
   else:
-    print("Too bad, the answer was " + ans[1])
-    GAME_STATE = False
+    print("Too bad, the answer was " + ans["author"])
+    ans = end_game(input("Want to go again? y/n "))
+    continue
 
   print("Clues Left: " + str(guess) + "/4" )
   user_ans = input()
-  if user_ans.lower() == ans[1].lower():
-    print(f"Yes! the answer was {ans[1]}")
+  if user_ans.lower() == ans["author"].lower():
+    print(f"Yes! the answer was {ans['author']}")
+    ans = end_game(input("Want to go again? y/n "))
   else:
     guess -= 1
+
+
+
+
+
