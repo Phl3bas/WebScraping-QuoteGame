@@ -12,6 +12,6 @@
 
 ## Install
 
-1. `git clone ` repository
+1. `git clone https://github.com/Phl3bas/WebScraping-QuoteGame` repository
 2. `cd` to cloned directory
 3. run `python main.py`
