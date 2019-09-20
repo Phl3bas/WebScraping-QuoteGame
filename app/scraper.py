@@ -1,7 +1,6 @@
 from bs4 import BeautifulSoup
 from requests import get
 
-
 def get_quotes(BASE_URL,URL=None):
   QUOTES = []
   response = get(URL or BASE_URL)
