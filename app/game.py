@@ -1,7 +1,7 @@
 from random import choice
 from bs4 import BeautifulSoup
 from requests import get
-from app.Config import BASE_URL
+from app.config import BASE_URL
 
 def start_game(QUOTES):
   user_ans = ""
